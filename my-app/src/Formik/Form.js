@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
+import axios from "axios";
+
 const Form = () => {
+    const [data, setData] = useState({
+        email: '',
+        password: '',
+        name: ''
+    });
+    console.log(data)
+    debugger
+    
+    useEffect(() => {
+        axios.get('http://localhost:3001/profile').then(res => {
+            setData(res.data)
+        }).catch(err => alert(err.response.statusText))
+    }, [])
+
     return (
         <div>
             <Formik
-                initialValues={{ email: '', password: '' }}
+                enableReinitialize={true}
+                initialValues={{
+                    email: data.email,
+                    password: data.password,
+                    name: data.name
+                }}
                 validate={values => {
                     const errors = {};
                     if (!values.email) {
@@ -42,7 +63,7 @@ const Form = () => {
                     <form
                         className="form"
                         onSubmit={handleSubmit}>
-                            <h1>Profile:</h1>
+                        <h1>Profile:</h1>
                         <div className="field">
                             <input
                                 placeholder=' '
